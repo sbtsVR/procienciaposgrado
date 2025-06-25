@@ -98,7 +98,7 @@
     .thumbnail-panel {
       flex: 1.5;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr); /* Cambié para que haya más columnas */
       gap: 8px;
       max-height: 440px;
       overflow: hidden;
@@ -322,6 +322,7 @@
       const wrapper = document.createElement("div");
       wrapper.className = "thumbnail-wrapper";
       wrapper.innerHTML = `
+
         <img class="thumbnail" src="${item.img}" onclick="updateContent(${index})" title="${item.name}" />
       `;
       panel.appendChild(wrapper);
