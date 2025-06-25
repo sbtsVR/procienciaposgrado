@@ -2,34 +2,33 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Algoritmo de procesamiento de imagenes</title>
+  <title>Algoritmo de procesamiento de imágenes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    html, body {
+    body {
       margin: 0;
-      height: 100%;
-      overflow: hidden;
-      background-color: black;
       font-family: 'Segoe UI', sans-serif;
+      background-color: #f1f3f6;
+      color: #333;
     }
 
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-      display: block; /* Asegurando que el modelo se muestra correctamente */
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 26px;
     }
 
-    .logo-container {
-      position: absolute;
-      top: 20px;
-      left: 20px;
+    /* Barra de logos en la parte superior */
+    .logo-bar {
       display: flex;
-      gap: 15px;
-      z-index: 20;
+      gap: 20px;
+      align-items: center;
+      padding: 20px;
+      padding-bottom: 0;
+      margin-bottom: -10px;
     }
 
-    .logo-container img {
+    .logo-bar img {
       height: 60px;
       object-fit: contain;
       background-color: white;
@@ -37,146 +36,318 @@
       padding: 4px;
     }
 
-    .entrar-btn {
-      position: absolute;
-      bottom: 120px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #0000ff;
-      color: white;
-      padding: 12px 30px;
-      font-weight: bold;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      box-shadow: 0 0 15px white;
-      cursor: pointer;
-      z-index: 10;
-      display: none;
-    }
-
-    .autor-texto {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 14px;
-      font-family: Arial, sans-serif;
-      text-shadow: 1px 1px 3px #000;
-      z-index: 10;
-      display: none;
-    }
-
-    .autor-texto a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .autor-texto a:hover {
-      text-decoration: underline;
-    }
-
-    #loader {
-      position: absolute;
+    .top-bar {
       width: 100%;
-      height: 100%;
-      background: black;
+      max-width: 900px;
+      margin: 30px auto 10px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .upload-section input[type="file"] {
+      width: 100%;
+      max-width: 400px;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: white;
+    }
+
+    .upload-section button {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      background-color: #007bff;
+      border: none;
       color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .upload-section button:hover {
+      background-color: #0056b3;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+      gap: 20px;
+    }
+
+    .main {
+      flex: 3;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+
+    .thumbnail-panel {
+      flex: 1.5;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* Cambié para que haya más columnas */
+      gap: 8px;
+      max-height: 440px;
+      overflow: hidden;
+    }
+
+    .thumbnail-wrapper {
+      height: 100px;
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 18px;
-      text-align: center;
-      padding: 0 30px;
-      box-sizing: border-box;
-      z-index: 100;
     }
 
-    /* Responsive Styles */
+    .thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .thumbnail:hover {
+      border-color: #007bff;
+      transform: scale(1.03);
+    }
+
+    .thumbnail.active {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px #007bff;
+    }
+
+    #mainImage {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .tags {
+      margin-top: 15px;
+    }
+
+    .tags ul {
+      padding-left: 20px;
+    }
+
+    .description {
+      margin-top: 15px;
+      padding: 15px;
+      background: #eef7ff;
+      border-left: 4px solid #2196F3;
+      border-radius: 6px;
+    }
+
+    .title-label {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 15px;
+      min-height: 24px;
+    }
+
+    .notification {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ffdddd;
+      color: #a00;
+      padding: 15px 25px;
+      border: 1px solid #a00;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-weight: bold;
+      z-index: 9999;
+      display: none;
+    }
+
+    /* Media Queries para mejorar la experiencia en móviles */
     @media (max-width: 768px) {
-      .logo-container {
-        top: 10px;
-        left: 10px;
+      .logo-bar {
         flex-direction: column;
+        align-items: center;
         gap: 10px;
       }
 
-      .entrar-btn {
-        bottom: 80px;
-        padding: 10px 20px;
+      .upload-section {
+        width: 100%;
+        padding: 10px;
+      }
+
+      .upload-section input[type="file"] {
+        width: 100%;
+      }
+
+      .upload-section button {
+        width: 100%;
         font-size: 14px;
       }
 
-      .autor-texto {
-        bottom: 20px;
-        font-size: 12px;
+      .container {
+        flex-direction: column;
+      }
+
+      .thumbnail-panel {
+        grid-template-columns: 1fr;
+        margin-top: 20px;
+      }
+
+      .main {
+        width: 100%;
+        box-shadow: none;
+        margin-top: 20px;
       }
     }
-  </style>
 
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  </style>
 </head>
 <body>
 
-<!-- BARRA DE LOGOS -->
-<div class="logo-container">
-  <img src="uch.png" alt="Logo UCH" />
-  <img src="logo.png" alt="Logo del Proyecto" />
-</div>
+  <!-- LOGOS SUPERIORES -->
+  <div class="logo-bar">
+    <img src="uch.png" alt="Logo UCH">
+    <img src="logo.png" alt="Logo del Proyecto">
+  </div>
 
-<!-- Cargando información antes de que se muestre el modelo -->
-<div id="loader">
-  Financiado mediante contrato PE501086755-2024-PROCIENCIA,<br>
-  en el marco del proyecto "Uso de la Realidad Mixta y la Inteligencia Artificial para Complementar el Acceso a los Principales Atractivos Turísticos de Cusco y Lima."
-</div>
+  <h2>Algoritmo de procesamiento de imágenes</h2>
 
-<!-- Modelo 3D que se visualizará -->
-<model-viewer
-  id="viewer"
-  src="newman.glb"
-  skybox-image="fondo3.jpg"
-  auto-rotate
-  auto-rotate-delay="0"
-  camera-controls
-  exposure="5"
-  shadow-intensity="1"
-  disable-zoom
-  touch-action="none"
-  alt="Modelo 3D de Julio"
-  reveal="manual"
-  loading="eager"
->
-</model-viewer>
+  <div class="top-bar">
+    <div class="upload-section">
+      <input type="file" />
+      <button onclick="mostrarAlerta()">Analizar Imagen</button>
+    </div>
+  </div>
 
-<!-- Botón de entrada -->
-<button class="entrar-btn">ENTRAR</button>
+  <div class="container">
+    <div class="main">
+      <div class="title-label" id="titleLabel">Ciudad Sagrada de Caral</div>
+      <img id="mainImage" src="img1.jpg" alt="Imagen principal" />
+      
+      <div class="tags" id="tags">
+        <h4>Etiquetas detectadas:</h4>
+        <ul>
+          <li>Arquitectura antigua</li>
+          <li>Ciudad sagrada</li>
+          <li>Civilización Caral</li>
+          <li>Patrimonio mundial</li>
+          <li>Templo</li>
+          <li>Sitio arqueológico</li>
+        </ul>
+      </div>
 
-<!-- Información del autor -->
-<div class="autor-texto">
-  <a href="https://ctivitae.concytec.gob.pe/appDirectorioCTI/VerDatosInvestigador.do?id_investigador=231036" target="_blank">
-    Realizado por: Sebastian Juniors Ramos Cosi
-  </a>
-</div>
+      <div class="description" id="description">
+        <strong>Descripción:</strong><br />
+        Vista panorámica de Caral, la ciudad más antigua de América, con pirámides monumentales y espacios ceremoniales.
+      </div>
+    </div>
 
-<script>
-  const viewer = document.getElementById('viewer');
-  const loader = document.getElementById('loader');
-  const button = document.querySelector('.entrar-btn');
-  const autor = document.querySelector('.autor-texto');
+    <div class="thumbnail-panel" id="thumbnailPanel"></div>
+  </div>
 
-  viewer.addEventListener('load', () => {
-    loader.style.display = 'none';
-    viewer.style.display = 'block';
-    button.style.display = 'block';
-    autor.style.display = 'block';
-    viewer.dismissPoster();
-  });
+  <div class="notification" id="alertaCreditos">Créditos insuficientes. Por favor, recargue más.</div>
 
-  button.addEventListener('click', () => {
-    window.location.href = 'interfaz.html';
-  });
-</script>
+  <script>
+    const data = [
+      {
+        name: "Ciudad Sagrada de Caral",
+        img: "img1.jpg",
+        tags: ["Arquitectura antigua", "Ciudad sagrada", "Civilización Caral", "Patrimonio mundial", "Templo", "Sitio arqueológico"],
+        desc: "Vista panorámica de Caral, la ciudad más antigua de América, con pirámides monumentales y espacios ceremoniales."
+      },
+      {
+        name: "Flauta de Caral",
+        img: "img2.jpg",
+        tags: ["Flauta de hueso", "Instrumento musical", "Cultura Caral", "Ritualidad"],
+        desc: "Flauta de hueso encontrada en Caral, utilizada en rituales religiosos y musicales hace más de 4000 años."
+      },
+      {
+        name: "Templo del Sol de Pachacamac",
+        img: "img3.jpg",
+        tags: ["Templo del Sol", "Costumbres religiosas", "Civilización Lima", "Centro ceremonial", "Arqueología costera"],
+        desc: "Templo del Sol de Pachacamac, edificado en una colina con vista al mar y destinado a rendir culto al dios Pachacamac."
+      },
+      {
+        name: "Ídolo de Pachacamac",
+        img: "img4.jpg",
+        tags: ["Ídolo de madera", "Dios Pachacamac", "Arte prehispánico", "Centro ritual"],
+        desc: "Ídolo tallado en madera de más de 2 metros de altura hallado en Pachacamac, símbolo central del culto religioso local."
+      },
+      {
+        name: "Murallas de Sacsayhuamán",
+        img: "img5.jpg",
+        tags: ["Muro ciclópeo", "Ingeniería Inca", "Fortaleza ceremonial", "Cusco", "Patrimonio arqueológico"],
+        desc: "Vista de los muros megalíticos de Sacsayhuamán, con piedras encajadas con precisión sin el uso de mortero."
+      },
+      {
+        name: "Trono del Inca en Sacsayhuamán",
+        img: "img6.jpg",
+        tags: ["Asiento ceremonial", "Piedra tallada", "Autoridad inca", "Espacio ritual", "Símbolos de poder"],
+        desc: "Asiento esculpido en piedra conocido como el 'Trono del Inca', ubicado en Sacsayhuamán y usado en ceremonias oficiales o actos simbólicos de poder."
+      },
+      {
+        name: "Ciudadela de Machu Picchu",
+        img: "img7.jpg",
+        tags: ["Ciudadela Inca", "Montaña sagrada", "Arquitectura ceremonial", "Santuario histórico", "Patrimonio mundial"],
+        desc: "Machu Picchu, ciudadela escondida en las alturas de los Andes, construida con finas técnicas arquitectónicas incas."
+      },
+      {
+        name: "Intihuatana de Machu Picchu",
+        img: "img8.jpg",
+        tags: ["Reloj solar", "Piedra ritual", "Cosmovisión andina", "Astronomía inca", "Ritual solar"],
+        desc: "La Intihuatana, una piedra tallada ubicada en Machu Picchu, funcionaba como marcador astronómico utilizado por los incas para ceremonias vinculadas al sol y al calendario agrícola."
+      }
+    ];
+
+    const panel = document.getElementById("thumbnailPanel");
+
+    data.forEach((item, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "thumbnail-wrapper";
+      wrapper.innerHTML = `
+        <img class="thumbnail" src="${item.img}" onclick="updateContent(${index})" title="${item.name}" />
+      `;
+      panel.appendChild(wrapper);
+    });
+
+    function updateContent(index) {
+      document.getElementById("mainImage").src = data[index].img;
+      document.getElementById("titleLabel").textContent = data[index].name;
+      document.getElementById("tags").innerHTML = `<h4>Etiquetas detectadas:</h4><ul>${data[index].tags.map(t => `<li>${t}</li>`).join('')}</ul>`;
+      document.getElementById("description").innerHTML = `<strong>Descripción:</strong><br />${data[index].desc}`;
+
+      document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+        thumb.classList.toggle('active', i === index);
+      });
+    }
+
+    window.onload = () => updateContent(0);
+
+    function mostrarAlerta() {
+      const alerta = document.getElementById("alertaCreditos");
+      alerta.style.display = "block";
+      setTimeout(() => {
+        alerta.style.display = "none";
+      }, 3500);
+    }
+  </script>
 
 </body>
 </html>
