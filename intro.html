@@ -10,6 +10,7 @@
       height: 100%;
       overflow: hidden;
       background-color: black;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     model-viewer {
@@ -91,6 +92,27 @@
       box-sizing: border-box;
       z-index: 100;
     }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .logo-container {
+        top: 10px;
+        left: 10px;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .entrar-btn {
+        bottom: 80px;
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+
+      .autor-texto {
+        bottom: 20px;
+        font-size: 12px;
+      }
+    }
   </style>
 
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -103,11 +125,13 @@
   <img src="logo.png" alt="Logo del Proyecto" />
 </div>
 
+<!-- Cargando información antes de que se muestre el modelo -->
 <div id="loader">
   Financiado mediante contrato PE501086755-2024-PROCIENCIA,<br>
   en el marco del proyecto "Uso de la Realidad Mixta y la Inteligencia Artificial para Complementar el Acceso a los Principales Atractivos Turísticos de Cusco y Lima."
 </div>
 
+<!-- Modelo 3D que se visualizará -->
 <model-viewer
   id="viewer"
   src="newman.glb"
@@ -125,8 +149,10 @@
 >
 </model-viewer>
 
+<!-- Botón de entrada -->
 <button class="entrar-btn">ENTRAR</button>
 
+<!-- Información del autor -->
 <div class="autor-texto">
   <a href="https://ctivitae.concytec.gob.pe/appDirectorioCTI/VerDatosInvestigador.do?id_investigador=231036" target="_blank">
     Realizado por: Sebastian Juniors Ramos Cosi
