@@ -79,6 +79,24 @@
       background-color: #0056b3;
     }
 
+    /* Botón de regreso a Home */
+    .home-btn {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      font-size: 14px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      z-index: 10;
+      margin: 30px auto;
+      display: block;
+    }
+
+    .home-btn:hover {
+      background-color: #218838;
+    }
+
     .container {
       display: flex;
       flex-direction: row;
@@ -237,6 +255,9 @@
       <button onclick="mostrarAlerta()">Analizar Imagen</button>
     </div>
   </div>
+
+  <!-- Botón Home para regresar a la intro.html -->
+  <button class="home-btn" onclick="window.location.href='intro.html'">Volver a la Intro</button>
 
   <div class="container">
     <div class="main">
